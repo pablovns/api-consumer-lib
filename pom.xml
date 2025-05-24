@@ -37,6 +37,31 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!-- Versões das dependências -->
+    <gson.version>2.10.1</gson.version>
+    <slf4j.version>2.0.9</slf4j.version>
+    <logback.version>1.4.14</logback.version>
+
+    <!-- Versões das dependências de teste -->
+    <junit.version>5.10.1</junit.version>
+    <mockito.version>5.7.0</mockito.version>
+    <wiremock.version>3.3.1</wiremock.version>
+    <assertj.version>3.24.2</assertj.version>
+
+    <!-- Versões dos plugins -->
+    <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>3.2.2</maven-surefire-plugin.version>
+    <maven-failsafe-plugin.version>3.2.2</maven-failsafe-plugin.version>
+    <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
+    <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
+    <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
+    <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
+    <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
   </properties>
 
   <dependencyManagement>
