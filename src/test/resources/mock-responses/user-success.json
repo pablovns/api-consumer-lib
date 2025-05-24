@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "active": true,
+  "createdAt": "2023-01-01T12:00:00Z",
+  "roles": ["USER", "ADMIN"],
+  "settings": {
+    "notifications": true,
+    "theme": "dark"
+  }
+}
