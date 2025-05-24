@@ -6,11 +6,19 @@ import io.github.pablovns.apiconsumer.config.ApiConsumerConfig;
 import io.github.pablovns.apiconsumer.config.GsonConfig;
 import io.github.pablovns.apiconsumer.core.ApiRequestBuilder;
 import io.github.pablovns.apiconsumer.core.ApiResponse;
+import io.github.pablovns.apiconsumer.exception.ApiConnectionException;
+import io.github.pablovns.apiconsumer.exception.ApiException;
+import io.github.pablovns.apiconsumer.exception.ApiParsingException;
+import io.github.pablovns.apiconsumer.exception.ApiTimeoutException;
 
+import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -72,19 +80,29 @@ public class ApiConsumer {
 
             ParseResult<T> parseResult = parseResponseData(response.body(), responseType);
 
+            if (parseResult.error() != null) {
+                throw new ApiParsingException("Erro ao fazer o parse da resposta", parseResult.error());
+            }
+
             return new ApiResponse<>(
                     response.statusCode(),
                     response.body(),
                     parseResult.data(),
-                    parseResult.error(),
+                    null,
                     response.headers().map()
             );
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            return new ApiResponse<>(0, null, null, e, null);
+            throw new ApiException("Thread foi interrompida durante a requisição", e);
+        } catch (HttpTimeoutException e) {
+            throw new ApiTimeoutException("Tempo de requisição excedido", e);
+        } catch (ConnectException | UnknownHostException e) {
+            throw new ApiConnectionException("Erro de conexão com o servidor", e);
+        } catch (IOException e) {
+            throw new ApiConnectionException("Erro de I/O durante a requisição", e);
         } catch (Exception e) {
-            return new ApiResponse<>(0, null, null, e, null);
+            throw new ApiException("Erro inesperado ao executar requisição", e);
         }
     }
 
