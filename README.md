@@ -1,6 +1,6 @@
 # Biblioteca em Java para consumo de APIs
 
-Uma biblioteca Java simples para facilitar o consumo de APIs REST. Permite realizar requisições HTTP de forma personalizada, interpretar e categorizar respostas por código de status (2xx, 3xx, 4xx, 5xx) e converter facilmente JSON em objetos Java utilizando [Gson](https://github.com/google/gson).
+Uma biblioteca Java simples para facilitar o consumo de APIs REST. Permite realizar requisições HTTP de forma personalizada, interpretar e categorizar respostas por código de status (2xx, 3xx, 4xx, 5xx) e converter facilmente a resposta em JSON em objetos Java utilizando [Gson](https://github.com/google/gson).
 
 ## ✨ Funcionalidades
 
@@ -18,7 +18,7 @@ Adicione a dependência no seu projeto:
 
 ```xml
 <dependency>
-  <groupId>com.seuprojeto</groupId>
-  <artifactId>api-consumer</artifactId>
-  <version>1.0.0</version>
+  <groupId>io.github.pablovns</groupId>
+  <artifactId>api-consumer-lib</artifactId>
+  <version>1.0-SNAPSHOT</version>
 </dependency>
