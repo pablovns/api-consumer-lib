@@ -1,5 +1,8 @@
 package io.github.pablovns.apiconsumer.interceptor;
 
-public class RequestInterceptor {
-    
+
+import java.net.http.HttpRequest;
+
+public interface RequestInterceptor {
+    HttpRequest.Builder intercept(HttpRequest.Builder builder);
 }
