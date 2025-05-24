@@ -20,7 +20,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
-import java.util.Map;
 import java.util.function.Consumer;
 
 public class ApiConsumer {
@@ -51,30 +50,7 @@ public class ApiConsumer {
 
     public <T> ApiResponse<T> execute(ApiRequestBuilder requestBuilder, Class<T> responseType) {
         try {
-            HttpRequest.Builder httpRequestBuilder = HttpRequest.newBuilder()
-                    .uri(URI.create(requestBuilder.getUrl()))
-                    .timeout(Duration.ofMillis(
-                            requestBuilder.getTimeout() > 0
-                                    ? requestBuilder.getTimeout()
-                                    : config.getDefaultTimeout()));
-
-            for (Map.Entry<String, String> header : requestBuilder.getHeaders().entrySet()) {
-                httpRequestBuilder.header(header.getKey(), header.getValue());
-            }
-
-            switch (requestBuilder.getMethod()) {
-                case GET -> httpRequestBuilder.GET();
-                case POST -> httpRequestBuilder.POST(HttpRequest.BodyPublishers.ofString(
-                        requestBuilder.getBody() != null ? requestBuilder.getBody() : ""));
-                case PUT -> httpRequestBuilder.PUT(HttpRequest.BodyPublishers.ofString(
-                        requestBuilder.getBody() != null ? requestBuilder.getBody() : ""));
-                case DELETE -> httpRequestBuilder.DELETE();
-                case PATCH -> httpRequestBuilder.method("PATCH", HttpRequest.BodyPublishers.ofString(
-                        requestBuilder.getBody() != null ? requestBuilder.getBody() : ""));
-                case HEAD -> httpRequestBuilder.method("HEAD", HttpRequest.BodyPublishers.noBody());
-                case OPTIONS -> httpRequestBuilder.method("OPTIONS", HttpRequest.BodyPublishers.noBody());
-            }
-
+            HttpRequest.Builder httpRequestBuilder = buildHttpRequest(requestBuilder);
             HttpRequest httpRequest = httpRequestBuilder.build();
             HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
@@ -104,6 +80,31 @@ public class ApiConsumer {
         } catch (Exception e) {
             throw new ApiException("Erro inesperado ao executar requisição", e);
         }
+    }
+
+    private HttpRequest.Builder buildHttpRequest(ApiRequestBuilder requestBuilder) {
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+                .uri(URI.create(requestBuilder.getUrl()))
+                .timeout(Duration.ofMillis(
+                        requestBuilder.getTimeout() > 0
+                                ? requestBuilder.getTimeout()
+                                : config.getDefaultTimeout()));
+
+        requestBuilder.getHeaders().forEach(builder::header);
+
+        String body = requestBuilder.getBody() != null ? requestBuilder.getBody() : "";
+
+        switch (requestBuilder.getMethod()) {
+            case GET -> builder.GET();
+            case POST -> builder.POST(HttpRequest.BodyPublishers.ofString(body));
+            case PUT -> builder.PUT(HttpRequest.BodyPublishers.ofString(body));
+            case DELETE -> builder.DELETE();
+            case PATCH -> builder.method("PATCH", HttpRequest.BodyPublishers.ofString(body));
+            case HEAD -> builder.method("HEAD", HttpRequest.BodyPublishers.noBody());
+            case OPTIONS -> builder.method("OPTIONS", HttpRequest.BodyPublishers.noBody());
+        }
+
+        return builder;
     }
 
     private <T> ParseResult<T> parseResponseData(String responseBody, Class<T> responseType) {
